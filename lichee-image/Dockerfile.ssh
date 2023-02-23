@@ -1,0 +1,20 @@
+FROM ubuntu:18.04 AS base
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+# cache apt-get update results
+RUN apt-get update
+
+# install and "prime" the SSH server
+RUN apt-get install -qy openssh-server
+RUN service ssh start
+
+RUN groupadd --gid 1000 hello
+RUN useradd --create-home -s /bin/bash -g hello -u 1000 hello
+RUN echo 'hello:world' | chpasswd
+
+RUN apt-get install -qy cmatrix
+
+EXPOSE 22
+
+CMD ["/usr/sbin/sshd","-D"]
