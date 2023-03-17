@@ -1,0 +1,4 @@
+#!/bin/sh -e
+
+# enable the WiFi dongle driver
+modprobe r8188eu
