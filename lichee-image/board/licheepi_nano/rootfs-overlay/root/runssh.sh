@@ -7,6 +7,6 @@
 # /sbin/getty -L -n -l /root/runssh.sh /dev/tty1 115200 linux
 
 echo Hi! Running SSH command
-sleep 5
+sleep 15
 
-exec ssh -o "StrictHostKeyChecking=no" -t -l hello -p 19350 4.tcp.ngrok.io
+exec ssh -o "StrictHostKeyChecking=no" -o "IdentitiesOnly=yes" -i /root/ssh_key -t -l hello -p 12235 8.tcp.ngrok.io
