@@ -9,4 +9,4 @@
 echo Hi! Running SSH command
 sleep 15
 
-exec ssh -o "StrictHostKeyChecking=no" -o "IdentitiesOnly=yes" -i /root/ssh_key -t -l hello -p 12235 8.tcp.ngrok.io
+exec ssh -o "StrictHostKeyChecking=no" -o "IdentitiesOnly=yes" -t -l hello -p 12235 8.tcp.ngrok.io
