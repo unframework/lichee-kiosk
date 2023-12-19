@@ -32,7 +32,7 @@ null::sysinit:/bin/ln -sf /proc/self/fd/2 /dev/stderr
 /dev/ttyS0::respawn:/sbin/getty -L  /dev/ttyS0 115200 vt100 # GENERIC_SERIAL
 
 # Autodialer on main screen console
-/dev/tty0::respawn:/sbin/getty -L -n -l /root/runssh.sh /dev/tty0 115200 linux
+/dev/tty1::respawn:/sbin/getty -L -n -l /root/runssh.sh /dev/tty1 115200 linux
 
 # Stuff to do for the 3-finger salute
 #::ctrlaltdel:/sbin/reboot
