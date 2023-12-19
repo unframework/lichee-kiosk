@@ -1,10 +1,11 @@
 #!/usr/bin/env node
 import "source-map-support/register";
 import * as path from "path";
-import { App, Stack, StackProps } from "aws-cdk-lib";
+import { App, CfnOutput, Stack, StackProps } from "aws-cdk-lib";
 import * as ec2 from "aws-cdk-lib/aws-ec2";
 import * as ecs from "aws-cdk-lib/aws-ecs";
 import * as ecra from "aws-cdk-lib/aws-ecr-assets";
+import * as elbv2 from "aws-cdk-lib/aws-elasticloadbalancingv2";
 import { Construct } from "constructs";
 
 class MainStack extends Stack {
@@ -51,6 +52,7 @@ class MainStack extends Stack {
     taskDefinition.addContainer("KioskServerContainer", {
       image: serverImage,
       memoryLimitMiB: 512,
+      portMappings: [{ containerPort: 22 }],
     });
 
     const service = new ecs.FargateService(this, "KioskService", {
@@ -58,6 +60,25 @@ class MainStack extends Stack {
       taskDefinition,
       securityGroups: [securityGroup],
     });
+
+    // expose to the internet
+    const lb = new elbv2.NetworkLoadBalancer(this, "KioskNLB", {
+      vpc,
+      internetFacing: true,
+    });
+
+    const listener = lb.addListener("KioskSSHListener", {
+      port: 22,
+      protocol: elbv2.Protocol.TCP,
+    });
+
+    // Add the Fargate service as a target of the NLB
+    listener.addTargets("KioskSSHTargets", {
+      port: 22,
+      targets: [service],
+    });
+
+    new CfnOutput(this, "KioskServerHost", { value: lb.loadBalancerDnsName });
   }
 }
 
