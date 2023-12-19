@@ -21,12 +21,11 @@ class MainStack extends Stack {
     );
 
     // define task for the server
-    const vpc = new ec2.Vpc(this, "KioskVPC", {
+    const vpc = new ec2.Vpc(this, "KioskServerVPC", {
       maxAzs: 2,
-      natGateways: 0,
     });
 
-    const cluster = new ecs.Cluster(this, "KioskCluster", {
+    const cluster = new ecs.Cluster(this, "KioskServerCluster", {
       vpc,
     });
 
