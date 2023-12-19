@@ -4,4 +4,6 @@
 sleep 5
 
 # start SSH client with TTY forwarding
-exec ssh -o "StrictHostKeyChecking=no" -o "IdentitiesOnly=yes" -t -l hello -p 12345 example.com
+exec ssh -o "StrictHostKeyChecking=no" -o "IdentitiesOnly=yes" -t \
+  -l hello \
+  example.com
