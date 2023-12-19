@@ -31,7 +31,7 @@ Buildroot takes care of downloading any further dependencies. Please note that I
 
 ## Building the Image
 
-The easiest way is using Docker (on Windows/MacOS/Linux).
+The easiest way is using Docker (on Windows/MacOS/Linux). If your Docker is older than v23, ensure that you have [BuildKit enabled](https://docs.docker.com/build/buildkit/#getting-started).
 
 First, clone this repo to your host:
 
@@ -42,6 +42,7 @@ git clone git@github.com:unframework/licheepi-nano-buildroot.git
 Run the image build command:
 
 ```sh
+mkdir -p dist # destination folder should exist before untarring
 docker build --output type=tar,dest=- . | tar x -C dist
 ```
 
@@ -154,7 +155,8 @@ Here is how the base image is generated (these commands are just for the repo ma
 
 ```sh
 docker build -f Dockerfile --target main -t unframework/licheepi-nano-buildroot:latest -t unframework/licheepi-nano-buildroot:$(git rev-parse --short HEAD) .
-docker push unframework/licheepi-nano-buildroot:latest unframework/licheepi-nano-buildroot:$(git rev-parse --short HEAD)
+docker push unframework/licheepi-nano-buildroot:$(git rev-parse --short HEAD)
+docker push unframework/licheepi-nano-buildroot:latest
 ```
 
 ## Linux and U-Boot Versions
