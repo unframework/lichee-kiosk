@@ -4,6 +4,12 @@
 
 ARG BASE_VERSION=latest
 
+# named target with generated machine identity SSH key
+FROM unframework/licheepi-nano-buildroot:$BASE_VERSION AS localsshkey
+WORKDIR /root/licheepi-nano
+RUN ssh-keygen -b 4096 -t rsa -f root_id_rsa -N '' -C 'root@LicheePiNano'
+
+# main build target
 FROM unframework/licheepi-nano-buildroot:$BASE_VERSION AS local
 
 # copy newest version of local files
@@ -15,6 +21,10 @@ COPY \
     external.desc \
     external.mk \
     ./
+
+# embed generated machine identity SSH key
+# (the .ssh chmod runs in a post-image script)
+COPY --from=localsshkey /root/licheepi-nano/root_id_rsa board/licheepi_nano/rootfs-overlay/root/.ssh/id_rsa
 
 # reset Buildroot config and trigger Linux kernel rebuild
 WORKDIR /root/buildroot
