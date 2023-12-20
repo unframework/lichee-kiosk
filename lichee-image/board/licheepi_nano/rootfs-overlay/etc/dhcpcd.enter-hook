@@ -1,5 +1,0 @@
-# ensure that wlan0 is correctly treated as wireless, so that WPA hook launches correctly
-ifwireless=1
-
-# ask wpa_supplicant use WEXT for our legacy hardware
-wpa_supplicant_driver=wext
