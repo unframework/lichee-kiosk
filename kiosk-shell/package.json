@@ -1,0 +1,19 @@
+{
+  "name": "lichee-kiosk-shell",
+  "version": "0.0.1",
+  "description": "Kiosk shell",
+  "license": "UNLICENSED",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "start": "tsx src/main.tsx"
+  },
+  "dependencies": {
+    "@types/node": "^20.9.0",
+    "@types/react": "^18.0.0",
+    "ink": "^4.4.0",
+    "react": "^18",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.2.2"
+  }
+}
