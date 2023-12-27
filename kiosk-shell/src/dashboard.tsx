@@ -44,12 +44,15 @@ const TEST_TIMES = [
   "09:30",
 ];
 
+const MAX_ROWS = 3;
+const MAX_COLS = 4;
+
 export const TimeList: React.FC = () => {
   const cols = useMemo(() => {
     const result: string[][] = [];
-    while (result.length * 4 < TEST_TIMES.length) {
-      const start = result.length * 4;
-      result.push(TEST_TIMES.slice(start, start + 4));
+    for (let i = 0; i < MAX_COLS; i += 1) {
+      const start = i * MAX_ROWS;
+      result.push(TEST_TIMES.slice(start, start + MAX_ROWS));
     }
     return result;
   }, []);
@@ -67,27 +70,51 @@ export const TimeList: React.FC = () => {
   );
 };
 
+const TEXT_FILLER = [...new Array(100)].map(() => " ").join("");
+
+// current date/time display?
+// tasks, upcoming calendar items - consider rotating over time when overflowing
+// QOTD?
+// general daily activity reminders?
+// @todo auto-disconnect early if no data/connection (to avoid stale clock display)
 export const Dashboard: React.FC = () => {
   const tmp = new Date();
 
   return (
-    <Box flexGrow={1} alignItems="stretch">
-      <Box flexBasis={0} flexGrow={1} flexDirection="column">
-        <Header label="ER Grnpt NB" updatedTime={tmp} />
-        <TimeList />
+    <Box flexGrow={1} flexDirection="column">
+      <Box flexGrow={1}>
+        <Box flexBasis={0} flexGrow={3} flexDirection="column">
+          <Header label="Calendar" updatedTime={tmp} />
+        </Box>
+
+        <VLine />
+
+        <Box flexBasis={0} flexGrow={2} flexDirection="column">
+          <Box flexBasis={0} flexGrow={1} flexDirection="column">
+            <Header label="ER Grnpt NB" updatedTime={tmp} />
+            <TimeList />
+          </Box>
+
+          <Box flexBasis={0} flexGrow={1} flexDirection="column">
+            <Header label="MTA G Bkn" updatedTime={tmp} />
+            <TimeList />
+          </Box>
+
+          <Box flexBasis={0} flexGrow={1} flexDirection="column">
+            <Header label="MTA G Qns" updatedTime={tmp} />
+            <TimeList />
+          </Box>
+        </Box>
       </Box>
 
-      <VLine />
+      <Box height={1}>
+        <Text inverse>QOTD</Text>
 
-      <Box flexBasis={0} flexGrow={1} flexDirection="column">
-        <Box flexBasis={0} flexGrow={1} flexDirection="column">
-          <Header label="MTA G Bkn" updatedTime={tmp} />
-          <TimeList />
+        <Box flexGrow={1} flexBasis={0} minWidth={2}>
+          <Text inverse>{TEXT_FILLER}</Text>
         </Box>
-        <Box flexBasis={0} flexGrow={1} flexDirection="column">
-          <Header label="MTA G Qns" updatedTime={tmp} />
-          <TimeList />
-        </Box>
+
+        <Text inverse>12-27 23:03</Text>
       </Box>
     </Box>
   );
