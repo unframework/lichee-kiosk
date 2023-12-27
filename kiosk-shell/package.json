@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "build": "tsc",
-    "start": "tsx src/main.tsx"
+    "start": "ts-node-esm src/main.tsx"
   },
   "dependencies": {
     "@types/node": "^20.9.0",
