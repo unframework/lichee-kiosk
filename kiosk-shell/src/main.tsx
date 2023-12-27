@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { render, useStdout, Box, Text } from "ink";
+import { render, useStdout, Box } from "ink";
+import { Dashboard } from "./dashboard.tsx";
 
 function useFullscreen() {
   const { stdout } = useStdout();
@@ -41,13 +42,8 @@ const App: React.FC = () => {
   }, []);
 
   return (
-    <Box
-      width={size.columns}
-      height={size.rows}
-      justifyContent="center"
-      alignItems="center"
-    >
-      <Text color="green">Kiosk shell</Text>
+    <Box width={size.columns} height={size.rows} alignItems="stretch">
+      <Dashboard />
     </Box>
   );
 };
