@@ -21,11 +21,12 @@ class MainStack extends Stack {
     );
 
     // define task for the server
-    const vpc = new ec2.Vpc(this, "KioskServerVPC", {
-      maxAzs: 2,
+    const vpc = new ec2.Vpc(this, "KioskVPC", {
+      maxAzs: 1,
+      natGateways: 0,
     });
 
-    const cluster = new ecs.Cluster(this, "KioskServerCluster", {
+    const cluster = new ecs.Cluster(this, "KioskCluster", {
       vpc,
     });
 
@@ -58,10 +59,11 @@ class MainStack extends Stack {
       cluster,
       taskDefinition,
       securityGroups: [securityGroup],
+      assignPublicIp: true,
     });
 
     // expose to the internet
-    const lb = new elbv2.NetworkLoadBalancer(this, "KioskNLB", {
+    const lb = new elbv2.NetworkLoadBalancer(this, "KioskServiceNLB", {
       vpc,
       internetFacing: true,
     });
