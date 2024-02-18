@@ -24,10 +24,11 @@ function useFullscreen() {
   }, [stdout]);
 
   // ask for full-screen mode
+  // @todo is this needed? does not seem to work anyway
   useEffect(() => {
-    process.stdout.write("\x1b[?1049h");
+    // process.stdout.write("\x1b[?1049h");
     return () => {
-      process.stdout.write("\x1b[?1049l");
+      // process.stdout.write("\x1b[?1049l");
     };
   }, [stdout]);
 
@@ -38,7 +39,7 @@ const App: React.FC = () => {
   const size = useFullscreen();
 
   useEffect(() => {
-    setTimeout(() => {}, 1000);
+    setTimeout(() => {}, 10000);
   }, []);
 
   return (

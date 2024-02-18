@@ -30,12 +30,12 @@ WORKDIR /home/hello/kiosk-shell
 COPY package.json yarn.lock ./
 RUN yarn install
 
+# set up the new shell
+COPY --chmod=755 session.sh ./
+RUN chsh -s /home/hello/kiosk-shell/session.sh hello
+
 # copy the latest bundle
 COPY dist/main.js ./
-
-# set up the new shell
-# @todo this
-# RUN chsh -s /bin/bash
 
 EXPOSE 22
 
