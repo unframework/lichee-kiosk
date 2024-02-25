@@ -1,5 +1,6 @@
-import { Box, Spacer, Text } from "ink";
 import React, { useMemo } from "react";
+import { Box, Spacer, Text } from "ink";
+import { useDashboardFeed } from "./feed.ts";
 
 const VLine: React.FC = () => {
   return (
@@ -70,7 +71,7 @@ export const TimeList: React.FC = () => {
   );
 };
 
-const TEXT_FILLER = [...new Array(100)].map(() => " ").join("");
+const TEXT_FILLER = [...new Array(200)].map(() => " ").join("");
 
 // current date/time display?
 // tasks, upcoming calendar items - consider rotating over time when overflowing
@@ -78,30 +79,38 @@ const TEXT_FILLER = [...new Array(100)].map(() => " ").join("");
 // general daily activity reminders?
 // @todo auto-disconnect early if no data/connection (to avoid stale clock display)
 export const Dashboard: React.FC = () => {
-  const tmp = new Date();
+  const feed = useDashboardFeed();
+
+  if (feed.state === "pending") {
+    return (
+      <Box flexGrow={1} flexDirection="column">
+        <Text>Loading...</Text>
+      </Box>
+    );
+  }
 
   return (
     <Box flexGrow={1} flexDirection="column">
       <Box flexGrow={1}>
         <Box flexBasis={0} flexGrow={3} flexDirection="column">
-          <Header label="Calendar" updatedTime={tmp} />
+          <Header label="Calendar" updatedTime={feed.lastUpdated} />
         </Box>
 
         <VLine />
 
         <Box flexBasis={0} flexGrow={2} flexDirection="column">
           <Box flexBasis={0} flexGrow={1} flexDirection="column">
-            <Header label="ER Grnpt NB" updatedTime={tmp} />
+            <Header label="ER Grnpt NB" updatedTime={feed.lastUpdated} />
             <TimeList />
           </Box>
 
           <Box flexBasis={0} flexGrow={1} flexDirection="column">
-            <Header label="MTA G Bkn" updatedTime={tmp} />
+            <Header label="MTA G Bkn" updatedTime={feed.lastUpdated} />
             <TimeList />
           </Box>
 
           <Box flexBasis={0} flexGrow={1} flexDirection="column">
-            <Header label="MTA G Qns" updatedTime={tmp} />
+            <Header label="MTA G Qns" updatedTime={feed.lastUpdated} />
             <TimeList />
           </Box>
         </Box>

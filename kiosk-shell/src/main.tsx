@@ -38,10 +38,6 @@ function useFullscreen() {
 const App: React.FC = () => {
   const size = useFullscreen();
 
-  useEffect(() => {
-    setTimeout(() => {}, 10000);
-  }, []);
-
   return (
     <Box width={size.columns} height={size.rows} alignItems="stretch">
       <Dashboard />
