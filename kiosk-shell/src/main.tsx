@@ -1,3 +1,6 @@
+import { config } from "dotenv";
+config();
+
 import { useEffect, useState } from "react";
 import { render, useStdout, Box } from "ink";
 import { Dashboard } from "./dashboard.tsx";
