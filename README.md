@@ -10,3 +10,12 @@ Create `.env` file:
 FEED_URL=...
 FEED_KEY=...
 ```
+
+Create `kiosk_id_rsa.pub` file.
+
+Packaging:
+
+```
+yarn build
+docker build -t tuiview .
+```

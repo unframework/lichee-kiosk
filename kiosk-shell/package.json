@@ -5,7 +5,7 @@
   "license": "UNLICENSED",
   "type": "module",
   "scripts": {
-    "build": "mkdirp dist && esbuild src/main.tsx --format=esm --external:react --external:ink --platform=node --bundle > dist/main.js",
+    "build": "mkdirp dist && esbuild src/main.tsx --format=esm --external:dotenv --external:react --external:ink --platform=node --bundle > dist/main.js",
     "start": "ts-node-esm src/main.tsx"
   },
   "dependencies": {

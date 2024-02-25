@@ -1,3 +1,4 @@
 /node_modules
 /dist
 /.env
+/kiosk_id_rsa.pub

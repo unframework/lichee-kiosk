@@ -22,7 +22,8 @@ RUN useradd --create-home -s /bin/bash -g hello -u 1000 hello
 RUN echo 'hello:world' | chpasswd
 
 # authorize the built machine identity SSH key
-COPY --from=tuisshkey /root/licheepi-nano/root_id_rsa.pub /home/hello/.ssh/authorized_keys
+# COPY --from=tuisshkey /root/licheepi-nano/root_id_rsa.pub /home/hello/.ssh/authorized_keys
+COPY kiosk_id_rsa.pub /home/hello/.ssh/authorized_keys
 RUN chown -R hello:hello /home/hello/.ssh && chmod -R go-rwx /home/hello/.ssh
 
 # pull in the packages only
