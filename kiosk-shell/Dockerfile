@@ -36,6 +36,7 @@ RUN chsh -s /home/hello/kiosk-shell/session.sh hello
 
 # copy the latest bundle
 COPY dist/main.js ./
+COPY .env ./
 
 EXPOSE 22
 
