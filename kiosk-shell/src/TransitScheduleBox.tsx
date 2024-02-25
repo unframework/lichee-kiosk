@@ -2,7 +2,8 @@ import React, { useMemo } from "react";
 import { Box, Spacer, Text } from "ink";
 import { Feed, ScheduleItem } from "./feed";
 
-const SHORT_TIME_FMT = new Intl.DateTimeFormat(["en-US"], {
+const SHORT_TIME_FMT = new Intl.DateTimeFormat("en-US", {
+  timeZone: "America/New_York",
   timeStyle: "short",
   hour12: false,
 });
@@ -66,8 +67,8 @@ const TimeItem: React.FC<{ now: Date; at: Date; delay?: number }> = ({
   );
 };
 
-const MAX_ROWS = 5;
-const MAX_COLS = 2;
+const MAX_ROWS = 10;
+const MAX_COLS = 1;
 
 const TimeList: React.FC<{
   now: Date;

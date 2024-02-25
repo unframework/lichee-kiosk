@@ -33,6 +33,24 @@ function useNow() {
   return now;
 }
 
+const CLOCK_TIME_FMT = new Intl.DateTimeFormat("en-US", {
+  timeZone: "America/New_York",
+  weekday: "short",
+  day: "numeric",
+  month: "short",
+  hour: "2-digit",
+  minute: "2-digit",
+  hour12: false,
+});
+
+const ClockBox: React.FC<{ now: Date }> = ({ now }) => {
+  return (
+    <Box>
+      <Text inverse>{CLOCK_TIME_FMT.format(now).replace(/,/g, "")}</Text>
+    </Box>
+  );
+};
+
 // current date/time display?
 // tasks, upcoming calendar items - consider rotating over time when overflowing
 // QOTD?
@@ -45,7 +63,7 @@ export const Dashboard: React.FC = () => {
   return (
     <Box flexGrow={1} flexDirection="column">
       <Box flexGrow={1}>
-        <Box flexBasis={0} flexGrow={3} flexDirection="column">
+        <Box flexBasis={0} flexGrow={2} flexDirection="column">
           <Header
             label="Calendar"
             updatedTime={feed.state === "loaded" ? feed.lastUpdated : undefined}
@@ -54,9 +72,9 @@ export const Dashboard: React.FC = () => {
 
         <VLine />
 
-        <Box flexBasis={0} flexGrow={2} flexDirection="column">
+        <Box flexBasis={0} flexGrow={1} flexDirection="column">
           <TransitScheduleBox
-            label="ER Grnpt NB"
+            label="ER to E34th"
             feed={feed}
             code="nyf-er-gp-nb"
             now={now}
@@ -89,7 +107,7 @@ export const Dashboard: React.FC = () => {
           <Text inverse>{TEXT_FILLER}</Text>
         </Box>
 
-        <Text inverse>12-27 23:03</Text>
+        <ClockBox now={now} />
       </Box>
     </Box>
   );
