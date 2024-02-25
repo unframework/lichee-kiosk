@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useState } from "react";
 import { Box, Spacer, Text } from "ink";
 import { useDashboardFeed } from "./feed.ts";
 import { Header, TransitScheduleBox } from "./TransitScheduleBox.tsx";
@@ -17,6 +17,22 @@ const VLine: React.FC = () => {
 
 const TEXT_FILLER = [...new Array(200)].map(() => " ").join("");
 
+function useNow() {
+  const [now, setNow] = useState(() => new Date());
+
+  useEffect(() => {
+    // @todo ensure alignment to minute boundary
+    const intervalId = setInterval(() => {
+      setNow(new Date());
+    }, 60000);
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, []);
+
+  return now;
+}
+
 // current date/time display?
 // tasks, upcoming calendar items - consider rotating over time when overflowing
 // QOTD?
@@ -24,6 +40,7 @@ const TEXT_FILLER = [...new Array(200)].map(() => " ").join("");
 // @todo auto-disconnect early if no data/connection (to avoid stale clock display)
 export const Dashboard: React.FC = () => {
   const feed = useDashboardFeed();
+  const now = useNow();
 
   return (
     <Box flexGrow={1} flexDirection="column">
@@ -38,14 +55,35 @@ export const Dashboard: React.FC = () => {
         <VLine />
 
         <Box flexBasis={0} flexGrow={2} flexDirection="column">
-          <TransitScheduleBox label="ER Grnpt NB" feed={feed} />
-          <TransitScheduleBox label="MTA G Bkn" feed={feed} />
-          <TransitScheduleBox label="MTA G Qns" feed={feed} />
+          <TransitScheduleBox
+            label="ER Grnpt NB"
+            feed={feed}
+            code="nyf-er-gp-nb"
+            now={now}
+          />
+          <TransitScheduleBox
+            label="MTA G Bkn"
+            feed={feed}
+            code="mta-g-gp-sb"
+            now={now}
+          />
+          <TransitScheduleBox
+            label="MTA G Qns"
+            feed={feed}
+            code="mta-g-gp-nb"
+            now={now}
+          />
         </Box>
       </Box>
 
       <Box height={1}>
-        <Text inverse>QOTD</Text>
+        <Text inverse>
+          {feed.state === "pending"
+            ? feed.lastError
+              ? `Error: ${feed.lastError}`
+              : "Loading..."
+            : "QOTD"}
+        </Text>
 
         <Box flexGrow={1} flexBasis={0} minWidth={2}>
           <Text inverse>{TEXT_FILLER}</Text>
