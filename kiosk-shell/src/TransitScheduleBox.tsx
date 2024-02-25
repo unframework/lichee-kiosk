@@ -84,7 +84,7 @@ const TimeList: React.FC<{
       result.push(schedule.slice(start, start + MAX_ROWS));
     }
     return result;
-  }, []);
+  }, [schedule]);
 
   return (
     <Box flexBasis={0} flexGrow={1} gap={2}>
