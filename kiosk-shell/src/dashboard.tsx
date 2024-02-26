@@ -74,7 +74,7 @@ export const Dashboard: React.FC = () => {
 
         <VLine />
 
-        <Box flexBasis={0} flexGrow={2} flexDirection="column">
+        <Box minWidth={24} flexDirection="column">
           <TransitScheduleBox
             label="ER to E34th"
             feed={feed}

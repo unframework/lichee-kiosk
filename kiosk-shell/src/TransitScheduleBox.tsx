@@ -105,7 +105,7 @@ const TimeList: React.FC<{
   }, [schedule]);
 
   return (
-    <Box flexBasis={0} flexGrow={1} gap={2}>
+    <Box flexBasis={0} flexGrow={1} gap={1}>
       {cols.map((col, colIndex) => (
         <Box flexBasis={0} flexGrow={1} key={colIndex} flexDirection="column">
           {col.map((item, itemIndex) => (
