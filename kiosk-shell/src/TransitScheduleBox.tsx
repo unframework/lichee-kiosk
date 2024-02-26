@@ -27,19 +27,47 @@ export const Header: React.FC<{ label: string; updatedTime?: Date }> = ({
   );
 };
 
-function renderLeadTime(scheduled: Date, now: Date) {
-  const diffSeconds = (scheduled.getTime() - now.getTime()) / 1000;
-  const diff = Math.floor(diffSeconds / 60);
-  return diff <= 0
-    ? "now"
-    : `${diff >= 60 ? Math.floor(diff / 60) + "h " : ""}${diff % 60}m`;
-}
-
 function renderDelay(delay: number) {
   const mm = Math.abs(Math.floor(delay / 60));
-  const sign = delay < 0 ? "-" : "+";
 
-  return `${sign}${mm}m`;
+  if (delay > 60) {
+    return <Text color="yellow">+{mm}m</Text>;
+  }
+
+  if (delay < -10) {
+    return <Text color="red">-{mm}m</Text>;
+  }
+
+  return null;
+}
+
+function renderLeadTime(scheduled: Date, now: Date, delay?: number) {
+  const diffSeconds = (scheduled.getTime() - now.getTime()) / 1000;
+  const diff = Math.floor(diffSeconds / 60);
+
+  if (diff >= 60) {
+    // render hours, but bail if too long
+    if (diff >= 12 * 60) {
+      return null;
+    }
+
+    // pad with space, with units if no delay
+    const hours = Math.floor(diff / 60);
+    const padded = ` ${Math.max(0, hours)}`.slice(-2);
+
+    return <Text dimColor>{padded}h</Text>;
+  }
+
+  const delayBox = delay !== undefined && renderDelay(delay);
+
+  // pad with space, with units if no delay
+  const padded = ` ${Math.max(0, diff)}`.slice(-2);
+  return (
+    <>
+      <Text dimColor>{padded}</Text>
+      {delayBox || <Text dimColor>m</Text>}
+    </>
+  );
 }
 
 const TimeItem: React.FC<{ now: Date; at: Date; delay?: number }> = ({
@@ -49,26 +77,16 @@ const TimeItem: React.FC<{ now: Date; at: Date; delay?: number }> = ({
 }) => {
   const displayTime = SHORT_TIME_FMT.format(at);
 
-  const delayBox =
-    delay !== undefined && (delay > 60 || delay < -10) ? (
-      <Box>
-        <Text color={delay < -10 ? "red" : "yellow"}>
-          {" " + renderDelay(delay)}
-        </Text>
-      </Box>
-    ) : null;
-
   return (
     <Box>
-      <Text bold={delay !== undefined}>{displayTime}</Text>
-      <Text dimColor>{" " + renderLeadTime(at, now)}</Text>
-      {delayBox}
+      <Text bold={delay !== undefined}>{displayTime} </Text>
+      {renderLeadTime(at, now)}
     </Box>
   );
 };
 
-const MAX_ROWS = 10;
-const MAX_COLS = 1;
+const MAX_ROWS = 5;
+const MAX_COLS = 2;
 
 const TimeList: React.FC<{
   now: Date;

@@ -52,6 +52,8 @@ const ClockBox: React.FC<{ now: Date }> = ({ now }) => {
 };
 
 // current date/time display?
+// highlight ferry times within 15min (no need for subway)
+// L line timing for Bedford
 // tasks, upcoming calendar items - consider rotating over time when overflowing
 // QOTD?
 // general daily activity reminders?
@@ -63,7 +65,7 @@ export const Dashboard: React.FC = () => {
   return (
     <Box flexGrow={1} flexDirection="column">
       <Box flexGrow={1}>
-        <Box flexBasis={0} flexGrow={2} flexDirection="column">
+        <Box flexBasis={0} flexGrow={3} flexDirection="column">
           <Header
             label="Calendar"
             updatedTime={feed.state === "loaded" ? feed.lastUpdated : undefined}
@@ -72,7 +74,7 @@ export const Dashboard: React.FC = () => {
 
         <VLine />
 
-        <Box flexBasis={0} flexGrow={1} flexDirection="column">
+        <Box flexBasis={0} flexGrow={2} flexDirection="column">
           <TransitScheduleBox
             label="ER to E34th"
             feed={feed}
