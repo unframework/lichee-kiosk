@@ -5,7 +5,7 @@ import { Feed, ScheduleItem } from "./feed";
 const SHORT_TIME_FMT = new Intl.DateTimeFormat("en-US", {
   timeZone: "America/New_York",
   timeStyle: "short",
-  hour12: false,
+  hourCycle: "h23",
 });
 
 export const Header: React.FC<{ label: string; updatedTime?: Date }> = ({
