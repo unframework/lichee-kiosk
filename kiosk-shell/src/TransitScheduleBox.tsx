@@ -80,7 +80,7 @@ const TimeItem: React.FC<{ now: Date; at: Date; delay?: number }> = ({
   return (
     <Box>
       <Text bold={delay !== undefined}>{displayTime} </Text>
-      {renderLeadTime(at, now)}
+      {renderLeadTime(at, now, delay)}
     </Box>
   );
 };
