@@ -1,0 +1,24 @@
+{
+  "name": "lichee-kiosk-shell",
+  "version": "0.0.1",
+  "description": "Kiosk shell",
+  "license": "UNLICENSED",
+  "type": "module",
+  "scripts": {
+    "build": "mkdirp dist && esbuild src/main.tsx --format=esm --external:dotenv --external:react --external:ink --platform=node --bundle > dist/main.js",
+    "start": "ts-node-esm src/main.tsx"
+  },
+  "dependencies": {
+    "@types/node": "^20.9.0",
+    "@types/react": "^18.0.0",
+    "dotenv": "^16.4.5",
+    "esbuild": "^0.20.0",
+    "ink": "^4.4.0",
+    "mkdirp": "^3.0.1",
+    "node-fetch": "^3.3.2",
+    "react": "^18",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.2.2",
+    "zod": "^3.22.4"
+  }
+}
