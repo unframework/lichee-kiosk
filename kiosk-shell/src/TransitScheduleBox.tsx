@@ -21,14 +21,14 @@ export const Header: React.FC<{ label: string; updatedTime?: Date }> = ({
   return (
     <Box>
       <Box flexShrink={1}>
-        <Text bold color="black" backgroundColor="green" wrap="truncate">
+        <Text color="black" backgroundColor="green" wrap="truncate">
           {label}
         </Text>
       </Box>
       <Box flexGrow={1} flexBasis={0} height={1} overflow="hidden">
         <Text backgroundColor="green">{TEXT_FILLER}</Text>
       </Box>
-      <Text bold color="black" backgroundColor="green" wrap="truncate">
+      <Text color="gray" backgroundColor="green" wrap="truncate">
         *{displayTime}
       </Text>
     </Box>

@@ -86,10 +86,11 @@ export function useDashboardFeed() {
   useEffect(() => {
     const loop = () => {
       // start new request
+      const lastUpdated = new Date(); // mark the time of request start (closest to when realtime data is fetched anyway)
       const feedPromise = performFeedFetch().then((feed) => {
         return {
           state: "loaded" as const,
-          lastUpdated: new Date(),
+          lastUpdated,
           lastError: null,
 
           schedules: feed.schedules,
