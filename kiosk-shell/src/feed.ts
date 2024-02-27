@@ -13,11 +13,11 @@ const feedSchema = z.object({
   ),
 });
 
-async function performFeedFetch() {
-  const feedUrl = process.env.FEED_URL;
-  const feedKey = process.env.FEED_KEY;
+async function performTransitFetch() {
+  const feedUrl = process.env.STEPS_TRANSIT_URL;
+  const feedKey = process.env.STEPS_KEY;
   if (!feedUrl || !feedKey) {
-    throw new Error("FEED_URL or FEED_KEY not set");
+    throw new Error("STEPS_TRANSIT_URL or STEPS_KEY not set");
   }
 
   const response = await fetch(feedUrl, {
@@ -87,7 +87,7 @@ export function useDashboardFeed() {
     const loop = () => {
       // start new request
       const lastUpdated = new Date(); // mark the time of request start (closest to when realtime data is fetched anyway)
-      const feedPromise = performFeedFetch().then((feed) => {
+      const feedPromise = performTransitFetch().then((feed) => {
         return {
           state: "loaded" as const,
           lastUpdated,
