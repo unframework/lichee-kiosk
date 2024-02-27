@@ -94,6 +94,12 @@ export const Dashboard: React.FC = () => {
             code="mta-g-gp-nb"
             now={now}
           />
+          <TransitScheduleBox
+            label="MTA L Bedf to 8"
+            feed={feed}
+            code="mta-l-bedf-nb"
+            now={now}
+          />
         </Box>
       </Box>
 
