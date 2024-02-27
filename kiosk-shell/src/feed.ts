@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { z } from "zod";
 import fetch from "node-fetch";
 
@@ -13,7 +13,11 @@ const feedSchema = z.object({
   ),
 });
 
-async function performTransitFetch() {
+export interface TransitData {
+  schedules: Record<string, ScheduleItem[]>;
+}
+
+export async function fetchTransit(): Promise<TransitData> {
   const feedUrl = process.env.STEPS_TRANSIT_URL;
   const feedKey = process.env.STEPS_KEY;
   if (!feedUrl || !feedKey) {
@@ -58,26 +62,32 @@ export interface ScheduleItem {
   delay?: number;
 }
 
-export type Feed =
+export type Feed<T> =
   | {
       state: "pending";
       lastError: unknown;
     }
-  | {
+  | ({
       state: "loaded";
       lastUpdated: Date;
       lastError: unknown;
+    } & T);
 
-      schedules: Record<string, ScheduleItem[]>;
-    };
-
-type FeedState = {
-  feed: Feed;
-  pendingPromise: Promise<Feed> | null;
+type FeedState<T> = {
+  feed: Feed<T>;
+  pendingPromise: Promise<Feed<T>> | null;
 };
 
-export function useDashboardFeed() {
-  const [state, setState] = useState<FeedState>(() => ({
+export function useFeedRefresh<T>(
+  fetchCb: () => Promise<T>,
+  intervalMillis: number = 60000
+): Feed<T> {
+  // wrap in ref to avoid triggering effect
+  const fetchCbRef = useRef(fetchCb);
+  fetchCbRef.current = fetchCb;
+  const intervalMillisRef = useRef(intervalMillis); // stays constant
+
+  const [state, setState] = useState<FeedState<T>>(() => ({
     feed: { state: "pending", lastError: null },
     pendingPromise: null,
   }));
@@ -87,13 +97,13 @@ export function useDashboardFeed() {
     const loop = () => {
       // start new request
       const lastUpdated = new Date(); // mark the time of request start (closest to when realtime data is fetched anyway)
-      const feedPromise = performTransitFetch().then((feed) => {
+      const feedPromise = fetchCbRef.current().then((data) => {
         return {
           state: "loaded" as const,
           lastUpdated,
           lastError: null,
 
-          schedules: feed.schedules,
+          ...data,
         };
       });
 
@@ -136,7 +146,7 @@ export function useDashboardFeed() {
 
     loop();
 
-    const intervalId = setInterval(loop, 60000);
+    const intervalId = setInterval(loop, intervalMillisRef.current);
 
     return () => {
       clearInterval(intervalId);

@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 import { Box, Spacer, Text } from "ink";
-import { Feed, ScheduleItem } from "./feed";
+import { Feed, ScheduleItem, TransitData } from "./feed";
 
 const TEXT_FILLER = [...new Array(200)].map(() => " ").join("");
 
@@ -146,7 +146,7 @@ const MessageBox: React.FC<{ text: string }> = ({ text }) => {
 
 export const TransitScheduleBox: React.FC<{
   label: string;
-  feed: Feed;
+  feed: Feed<TransitData>;
   code: string;
   now: Date;
 }> = ({ label, feed, code, now }) => {

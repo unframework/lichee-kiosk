@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Box, Spacer, Text } from "ink";
-import { useDashboardFeed } from "./feed.ts";
+import { fetchTransit, useFeedRefresh } from "./feed.ts";
 import { Header, TransitScheduleBox } from "./TransitScheduleBox.tsx";
 
 const VLine: React.FC = () => {
@@ -63,8 +63,8 @@ const ClockBox: React.FC<{ now: Date }> = ({ now }) => {
 // general daily activity reminders?
 // @todo auto-disconnect early if no data/connection (to avoid stale clock display)
 export const Dashboard: React.FC = () => {
-  const feed = useDashboardFeed();
   const now = useNow();
+  const feed = useFeedRefresh(fetchTransit, 60000);
 
   return (
     <Box flexGrow={1} flexDirection="column">
