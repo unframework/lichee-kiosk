@@ -35,20 +35,6 @@ export const Header: React.FC<{ label: string; updatedTime?: Date }> = ({
   );
 };
 
-function renderDelay(delay: number) {
-  const mm = Math.abs(Math.floor(delay / 60));
-
-  if (delay > 60) {
-    return <Text color="yellow">+{mm}m</Text>;
-  }
-
-  if (delay < -10) {
-    return <Text color="red">-{mm}m</Text>;
-  }
-
-  return null;
-}
-
 function renderLeadTime(scheduled: Date, now: Date, delay?: number) {
   const diffSeconds = (scheduled.getTime() - now.getTime()) / 1000;
   const diff = Math.floor(diffSeconds / 60);
@@ -66,14 +52,28 @@ function renderLeadTime(scheduled: Date, now: Date, delay?: number) {
     return <Text dimColor>{padded}h</Text>;
   }
 
-  const delayBox = delay !== undefined && renderDelay(delay);
+  const delayDigits =
+    delay !== undefined && (delay < -10 || delay > 60)
+      ? `${Math.abs(Math.floor(delay / 60))}`
+      : "";
+
+  const delayText = delayDigits !== "" && delay !== undefined && (
+    <Text color={delay < 0 ? "red" : "yellow"}>
+      {delay < 0 ? "-" : "+"}
+      {delayDigits}
+      {/* drop units if double-digit delay altogether */}
+      {delayDigits.length === 1 ? "m" : ""}
+    </Text>
+  );
 
   // pad with space, with units if no delay
   const padded = ` ${Math.max(0, diff)}`.slice(-2);
+  const leadTime = `${padded}${delayText ? "" : "m"}`;
+
   return (
     <>
-      <Text dimColor>{padded}</Text>
-      {delayBox || <Text dimColor>m</Text>}
+      <Text dimColor>{leadTime}</Text>
+      {delayText}
     </>
   );
 }
