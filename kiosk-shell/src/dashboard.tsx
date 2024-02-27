@@ -11,6 +11,7 @@ const VLine: React.FC = () => {
       borderBottom={false}
       borderRight={false}
       borderTop={false}
+      borderLeftColor="white"
     />
   );
 };
@@ -46,7 +47,9 @@ const CLOCK_TIME_FMT = new Intl.DateTimeFormat("en-US", {
 const ClockBox: React.FC<{ now: Date }> = ({ now }) => {
   return (
     <Box>
-      <Text inverse>{CLOCK_TIME_FMT.format(now).replace(/,/g, "")}</Text>
+      <Text color="black" backgroundColor="white">
+        {CLOCK_TIME_FMT.format(now).replace(/,/g, "")}
+      </Text>
     </Box>
   );
 };
@@ -104,7 +107,7 @@ export const Dashboard: React.FC = () => {
       </Box>
 
       <Box height={1}>
-        <Text inverse>
+        <Text color="black" backgroundColor="white">
           {feed.state === "pending"
             ? feed.lastError
               ? `Error: ${feed.lastError}`
@@ -119,7 +122,7 @@ export const Dashboard: React.FC = () => {
           height={1}
           overflow="hidden"
         >
-          <Text inverse>{TEXT_FILLER}</Text>
+          <Text backgroundColor="white">{TEXT_FILLER}</Text>
         </Box>
 
         <ClockBox now={now} />
