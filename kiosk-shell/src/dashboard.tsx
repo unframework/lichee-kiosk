@@ -54,6 +54,7 @@ const ClockBox: React.FC<{ now: Date }> = ({ now }) => {
 // current date/time display?
 // highlight ferry times within 15min (no need for subway)
 // L line timing for Bedford
+// weather
 // tasks, upcoming calendar items - consider rotating over time when overflowing
 // QOTD?
 // general daily activity reminders?
@@ -105,7 +106,13 @@ export const Dashboard: React.FC = () => {
             : "QOTD"}
         </Text>
 
-        <Box flexGrow={1} flexBasis={0} minWidth={2}>
+        <Box
+          flexGrow={1}
+          flexBasis={0}
+          minWidth={2}
+          height={1}
+          overflow="hidden"
+        >
           <Text inverse>{TEXT_FILLER}</Text>
         </Box>
 

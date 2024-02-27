@@ -2,6 +2,8 @@ import React, { useMemo } from "react";
 import { Box, Spacer, Text } from "ink";
 import { Feed, ScheduleItem } from "./feed";
 
+const TEXT_FILLER = [...new Array(200)].map(() => " ").join("");
+
 const SHORT_TIME_FMT = new Intl.DateTimeFormat("en-US", {
   timeZone: "America/New_York",
   timeStyle: "short",
@@ -18,11 +20,17 @@ export const Header: React.FC<{ label: string; updatedTime?: Date }> = ({
 
   return (
     <Box>
-      <Text bold color="green">
-        {label}
+      <Box flexShrink={1}>
+        <Text bold color="black" backgroundColor="green" wrap="truncate">
+          {label}
+        </Text>
+      </Box>
+      <Box flexGrow={1} flexBasis={0} height={1} overflow="hidden">
+        <Text backgroundColor="green">{TEXT_FILLER}</Text>
+      </Box>
+      <Text bold color="black" backgroundColor="green" wrap="truncate">
+        *{displayTime}
       </Text>
-      <Spacer />
-      <Text color="gray">*{displayTime}</Text>
     </Box>
   );
 };
@@ -78,14 +86,14 @@ const TimeItem: React.FC<{ now: Date; at: Date; delay?: number }> = ({
   const displayTime = SHORT_TIME_FMT.format(at);
 
   return (
-    <Box>
+    <Box flexShrink={0} height={1}>
       <Text bold={delay !== undefined}>{displayTime} </Text>
       {renderLeadTime(at, now, delay)}
     </Box>
   );
 };
 
-const MAX_ROWS = 5;
+const MAX_ROWS = 3;
 const MAX_COLS = 2;
 
 const TimeList: React.FC<{
@@ -105,7 +113,7 @@ const TimeList: React.FC<{
   }, [schedule]);
 
   return (
-    <Box flexBasis={0} flexGrow={1} gap={1}>
+    <Box gap={1} minHeight={MAX_ROWS}>
       {cols.map((col, colIndex) => (
         <Box flexBasis={0} flexGrow={1} key={colIndex} flexDirection="column">
           {col.map((item, itemIndex) => (
@@ -144,7 +152,12 @@ export const TransitScheduleBox: React.FC<{
 }> = ({ label, feed, code, now }) => {
   if (feed.state === "pending") {
     return (
-      <Box flexBasis={0} flexGrow={1} flexDirection="column">
+      <Box
+        minHeight={1 + MAX_ROWS}
+        flexGrow={0}
+        flexShrink={0}
+        flexDirection="column"
+      >
         <Header label={label} />
         <MessageBox text="Loading..." />
       </Box>
@@ -154,7 +167,12 @@ export const TransitScheduleBox: React.FC<{
   const scheduleData = feed.schedules[code];
   if (!scheduleData) {
     return (
-      <Box flexBasis={0} flexGrow={1} flexDirection="column">
+      <Box
+        minHeight={1 + MAX_ROWS}
+        flexGrow={0}
+        flexShrink={0}
+        flexDirection="column"
+      >
         <Header label={label} />
         <MessageBox text="No data" />
       </Box>
@@ -162,7 +180,12 @@ export const TransitScheduleBox: React.FC<{
   }
 
   return (
-    <Box flexBasis={0} flexGrow={1} flexDirection="column" alignItems="stretch">
+    <Box
+      minHeight={1 + MAX_ROWS}
+      flexGrow={0}
+      flexShrink={0}
+      flexDirection="column"
+    >
       <Header label={label} updatedTime={feed.lastUpdated} />
       <TimeList schedule={scheduleData} now={now} />
     </Box>
