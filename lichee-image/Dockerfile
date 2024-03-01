@@ -5,7 +5,6 @@
 ARG BASE_IMAGE=tui-base
 ARG BASE_VERSION=latest
 
-# main build target
 FROM $BASE_IMAGE:$BASE_VERSION AS local
 
 # copy newest version of local files
