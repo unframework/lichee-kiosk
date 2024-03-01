@@ -7,13 +7,52 @@
 /dts-v1/;
 #include "suniv-f1c100s-licheepi-nano.dts"
 
+/* @todo move to dtsi */
+&pio {
+	pwm0_pins: pwm0 {
+		pins = "PE12";
+		function = "pwm0";
+	};
+	pwm1_pins: pwm1 {
+		pins = "PE6";
+		function = "pwm1";
+	};
+};
+
 / {
 	model = "Lichee Pi Nano (Custom)";
+
+	/* @todo move to dtsi */
+	soc {
+		pwm: pwm@1c21000 {
+			compatible = "allwinner,sun7i-a20-pwm";
+			reg = <0x01c21000 0xC>;
+			clocks = <&osc24M>;
+			#pwm-cells = <3>;
+			status = "disabled";
+		};
+	};
+
+	backlight {
+		compatible = "pwm-backlight";
+		pwms = <&pwm 1 500000 0>;
+		brightness-levels = <0 4 8 16 32 64 128 255>;
+		default-brightness-level = <6>;
+	};
 };
 
 &panel {
 	// override default resolution (800x480) with smaller resolution: 480x272
 	compatible = "qiaodian,qd43003c0-40", "simple-panel";
+
+	// remove default GPIO property @todo improve
+	/delete-property/ enable-gpios;
+};
+
+&pwm {
+	pinctrl-names = "default";
+	pinctrl-0 = <&pwm1_pins>;
+	status = "okay";
 };
 
 /*
