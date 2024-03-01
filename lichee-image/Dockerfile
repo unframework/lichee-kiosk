@@ -63,15 +63,21 @@ RUN BR2_EXTERNAL=/root/licheepi-nano-sdk make licheepi_nano_sdk_defconfig
 
 RUN make sdk
 
+# named target with generated machine identity SSH key
+FROM base AS localsshkey
+WORKDIR /root/licheepi-nano
+RUN ssh-keygen -b 4096 -t rsa -f root_id_rsa -N '' -C 'root@LicheePiNano'
+
 # start main build using the generated toolchain bundle
 FROM base AS main
 
 # copy over the SDK tarball (keeping the name)
 COPY --from=sdk /root/buildroot/output/images/arm-buildroot-linux-gnueabi_sdk-buildroot.tar.gz /root/
 
-# copy over the main config
+# copy over the main config (excluding rootfs overlay/etc for now for better caching)
+# @todo linux_defconfig is probably not needed either
 WORKDIR /root/licheepi-nano
-COPY board/ board/
+COPY board/licheepi_nano/licheepi_nano_linux_defconfig board/licheepi_nano/
 COPY configs/ configs/
 COPY \
     Config.in \
@@ -89,6 +95,18 @@ RUN make toolchain
 # prepare for builds (broken out separately to cache more granularly, especially Linux source fetch)
 RUN make linux-source
 RUN make uboot-source
+
+RUN make source
+
+# copy rest of the board config
+COPY board/ /root/licheepi-nano/board/
+
+RUN make linux-build
+RUN make uboot-build
+
+# embed generated machine identity SSH key
+# (the .ssh copy and chmod runs in a post-image script)
+COPY --from=localsshkey /root/licheepi-nano/root_id_rsa /root/licheepi-nano/
 
 # run the main build command
 RUN make

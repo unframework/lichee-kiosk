@@ -2,15 +2,11 @@
 # image from scratch; ensure to clean the right stamps/folders to correctly
 # trigger rebuild with Buildroot
 
+ARG BASE_IMAGE=tui-base
 ARG BASE_VERSION=latest
 
-# named target with generated machine identity SSH key
-FROM unframework/licheepi-nano-buildroot:$BASE_VERSION AS localsshkey
-WORKDIR /root/licheepi-nano
-RUN ssh-keygen -b 4096 -t rsa -f root_id_rsa -N '' -C 'root@LicheePiNano'
-
 # main build target
-FROM unframework/licheepi-nano-buildroot:$BASE_VERSION AS local
+FROM $BASE_IMAGE:$BASE_VERSION AS local
 
 # copy newest version of local files
 WORKDIR /root/licheepi-nano
@@ -22,11 +18,7 @@ COPY \
     external.mk \
     ./
 
-# embed generated machine identity SSH key
-# (the .ssh chmod runs in a post-image script)
-COPY --from=localsshkey /root/licheepi-nano/root_id_rsa board/licheepi_nano/rootfs-overlay/root/.ssh/id_rsa
-
-# reset Buildroot config and trigger Linux kernel rebuild
+# reset Buildroot config and ensure rebuild is triggered
 WORKDIR /root/buildroot
 RUN BR2_EXTERNAL=/root/licheepi-nano make licheepi_nano_defconfig
 RUN cd output/build/uboot-v2021.01-f1c100s-4/ && rm .stamp_built .stamp_*installed
