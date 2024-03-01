@@ -74,10 +74,8 @@ FROM base AS main
 # copy over the SDK tarball (keeping the name)
 COPY --from=sdk /root/buildroot/output/images/arm-buildroot-linux-gnueabi_sdk-buildroot.tar.gz /root/
 
-# copy over the main config (excluding rootfs overlay/etc for now for better caching)
-# @todo linux_defconfig is probably not needed either
+# copy over the main config (excluding board files for better caching)
 WORKDIR /root/licheepi-nano
-COPY board/licheepi_nano/licheepi_nano_linux_defconfig board/licheepi_nano/
 COPY configs/ configs/
 COPY \
     Config.in \
@@ -92,17 +90,14 @@ RUN BR2_EXTERNAL=/root/licheepi-nano make licheepi_nano_defconfig
 # prep the toolchain from the tarball
 RUN make toolchain
 
-# prepare for builds (broken out separately to cache more granularly, especially Linux source fetch)
+# fetch sources (biggest downloads broken out to cache more granularly)
+RUN make linux-firmware-source
 RUN make linux-source
 RUN make uboot-source
-
 RUN make source
 
 # copy rest of the board config
 COPY board/ /root/licheepi-nano/board/
-
-RUN make linux-build
-RUN make uboot-build
 
 # embed generated machine identity SSH key
 # (the .ssh copy and chmod runs in a post-image script)
