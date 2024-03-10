@@ -3,6 +3,7 @@ import { Box, Spacer, Text } from "ink";
 import { useFeedRefresh } from "./feed.ts";
 import { Header, TransitScheduleBox } from "./TransitScheduleBox.tsx";
 import { fetchTransit } from "./transit.ts";
+import { fetchTodos } from "./todos.ts";
 
 const VLine: React.FC = () => {
   return (
@@ -47,8 +48,8 @@ const CLOCK_TIME_FMT = new Intl.DateTimeFormat("en-US", {
 
 const ClockBox: React.FC<{ now: Date }> = ({ now }) => {
   return (
-    <Box>
-      <Text color="black" backgroundColor="white">
+    <Box flexShrink={0} flexGrow={0}>
+      <Text color="black" backgroundColor="white" wrap="truncate">
         {CLOCK_TIME_FMT.format(now).replace(/,/g, "")}
       </Text>
     </Box>
@@ -65,16 +66,57 @@ const ClockBox: React.FC<{ now: Date }> = ({ now }) => {
 // @todo auto-disconnect early if no data/connection (to avoid stale clock display)
 export const Dashboard: React.FC = () => {
   const now = useNow();
-  const feed = useFeedRefresh(fetchTransit, 60000);
+  const transitFeed = useFeedRefresh(fetchTransit, 60000);
+  const todoFeed = useFeedRefresh(fetchTodos, 30 * 60000); // 30min refresh
+
+  // @todo show todo feed error?
+  const displayError = transitFeed.lastError
+    ? String(
+        (transitFeed.lastError as Record<string, unknown>).message ||
+          transitFeed.lastError
+      )
+    : null;
 
   return (
     <Box flexGrow={1} flexDirection="column">
       <Box flexGrow={1}>
         <Box flexBasis={0} flexGrow={3} flexDirection="column">
           <Header
-            label="Calendar"
-            updatedTime={feed.state === "loaded" ? feed.lastUpdated : undefined}
+            label={
+              todoFeed.state === "loaded"
+                ? `Todo (${todoFeed.todos.length})`
+                : "Todo"
+            }
+            updatedTime={
+              todoFeed.state === "loaded" ? todoFeed.lastUpdated : undefined
+            }
           />
+
+          {todoFeed.state === "loaded" ? (
+            <Box
+              flexGrow={1}
+              flexBasis={0}
+              flexDirection="column"
+              overflow="hidden"
+            >
+              {todoFeed.todos.map((todo, index) => (
+                <Box key={index} height={1} overflow="hidden" gap={1}>
+                  <Box flexGrow={0} flexShrink={0}>
+                    <Text color="gray" backgroundColor="black">
+                      {todo.date ? todo.date.slice(-5) : "  "}
+                    </Text>
+                  </Box>
+                  <Text color="white" backgroundColor="black" wrap="truncate">
+                    {todo.text.replace(/^@todo\s+/, "")}
+                  </Text>
+                </Box>
+              ))}
+            </Box>
+          ) : (
+            <Text color="white" backgroundColor="black">
+              {String(todoFeed.lastError || "Loading...")}
+            </Text>
+          )}
         </Box>
 
         <VLine />
@@ -82,25 +124,25 @@ export const Dashboard: React.FC = () => {
         <Box minWidth={24} flexDirection="column">
           <TransitScheduleBox
             label="ER to E34th"
-            feed={feed}
+            feed={transitFeed}
             code="nyf-er-gp-nb"
             now={now}
           />
           <TransitScheduleBox
             label="MTA G Bkn"
-            feed={feed}
+            feed={transitFeed}
             code="mta-g-gp-sb"
             now={now}
           />
           <TransitScheduleBox
             label="MTA G Qns"
-            feed={feed}
+            feed={transitFeed}
             code="mta-g-gp-nb"
             now={now}
           />
           <TransitScheduleBox
             label="MTA L Bedf to 8"
-            feed={feed}
+            feed={transitFeed}
             code="mta-l-bedf-nb"
             now={now}
           />
@@ -108,11 +150,9 @@ export const Dashboard: React.FC = () => {
       </Box>
 
       <Box height={1}>
-        <Text color="black" backgroundColor="white">
-          {feed.state === "pending"
-            ? feed.lastError
-              ? `Error: ${feed.lastError}`
-              : "Loading..."
+        <Text color="black" backgroundColor="white" wrap="truncate">
+          {transitFeed.state === "pending"
+            ? displayError || "Loading..."
             : "QOTD"}
         </Text>
 
