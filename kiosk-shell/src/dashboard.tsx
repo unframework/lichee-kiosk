@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Box, Spacer, Text } from "ink";
-import { fetchTransit, useFeedRefresh } from "./feed.ts";
+import { useFeedRefresh } from "./feed.ts";
 import { Header, TransitScheduleBox } from "./TransitScheduleBox.tsx";
+import { fetchTransit } from "./transit.ts";
 
 const VLine: React.FC = () => {
   return (

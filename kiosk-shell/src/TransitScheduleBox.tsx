@@ -1,6 +1,7 @@
 import React, { useMemo } from "react";
 import { Box, Spacer, Text } from "ink";
-import { Feed, ScheduleItem, TransitData } from "./feed";
+import { Feed } from "./feed";
+import { ScheduleItem, TransitData } from "./transit";
 
 const TEXT_FILLER = [...new Array(200)].map(() => " ").join("");
 
