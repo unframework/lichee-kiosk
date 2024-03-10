@@ -100,7 +100,13 @@ export const Dashboard: React.FC = () => {
               overflow="hidden"
             >
               {todoFeed.todos.map((todo, index) => (
-                <Box key={index} height={1} overflow="hidden" gap={1}>
+                <Box
+                  key={index}
+                  flexShrink={0}
+                  height={1}
+                  overflow="hidden"
+                  gap={1}
+                >
                   <Box flexGrow={0} flexShrink={0}>
                     <Text color="gray" backgroundColor="black">
                       {todo.date ? todo.date.slice(-5) : "  "}
