@@ -6,6 +6,8 @@ import { TransitScheduleBox } from "./TransitScheduleBox.tsx";
 import { TodoBox } from "./TodoBox.tsx";
 import { fetchTransit } from "./transit.ts";
 import { fetchTodos } from "./todos.ts";
+import { WeatherBox } from "./WeatherBox.tsx";
+import { fetchWeather } from "./weather.ts";
 
 const VLine: React.FC = () => {
   return (
@@ -70,6 +72,7 @@ export const Dashboard: React.FC = () => {
   const now = useNow();
   const transitFeed = useFeedRefresh(fetchTransit, 60000);
   const todoFeed = useFeedRefresh(fetchTodos, 30 * 60000); // 30min refresh
+  const weatherFeed = useFeedRefresh(fetchWeather, 120 * 60000); // 2hr refresh
 
   // @todo show todo feed error?
   const displayError = transitFeed.lastError
@@ -113,6 +116,8 @@ export const Dashboard: React.FC = () => {
             code="mta-l-bedf-nb"
             now={now}
           />
+
+          <WeatherBox weatherFeed={weatherFeed} />
         </Box>
       </Box>
 
