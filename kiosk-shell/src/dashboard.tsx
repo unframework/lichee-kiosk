@@ -72,7 +72,7 @@ export const Dashboard: React.FC = () => {
   const now = useNow();
   const transitFeed = useFeedRefresh(fetchTransit, 60000);
   const todoFeed = useFeedRefresh(fetchTodos, 30 * 60000); // 30min refresh
-  const weatherFeed = useFeedRefresh(fetchWeather, 120 * 60000); // 2hr refresh
+  const weatherFeed = useFeedRefresh(fetchWeather, 10 * 60000); // 10min refresh
 
   // @todo show todo feed error?
   const displayError = transitFeed.lastError
