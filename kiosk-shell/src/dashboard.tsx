@@ -117,7 +117,15 @@ export const Dashboard: React.FC = () => {
             now={now}
           />
 
-          <WeatherBox weatherFeed={weatherFeed} />
+          <Box
+            height={2}
+            flexBasis={0}
+            flexGrow={1}
+            flexShrink={1}
+            overflow="hidden"
+          >
+            <WeatherBox weatherFeed={weatherFeed} />
+          </Box>
         </Box>
       </Box>
 

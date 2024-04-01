@@ -6,6 +6,8 @@ function cels(temp: number) {
   return Math.round(temp - 273.15);
 }
 
+const MIN_GUST_MPS = 10; // display gust above about 20 knots
+
 // m/s to km/h
 function kmh(mps: number) {
   return Math.round(mps * 3.6);
@@ -23,8 +25,20 @@ export const WeatherBox: React.FC<{
 }> = ({ weatherFeed }) => {
   if (weatherFeed.state === "pending") {
     return (
-      <Box height={2} flexDirection="column">
-        <Text>Loading...</Text>
+      <Box
+        height={2}
+        flexBasis={0}
+        flexGrow={1}
+        flexShrink={1}
+        overflow="hidden"
+      >
+        {weatherFeed.lastError ? (
+          <Text backgroundColor="red" color="white">
+            {String(weatherFeed.lastError)}
+          </Text>
+        ) : (
+          <Text>Loading...</Text>
+        )}
       </Box>
     );
   }
@@ -56,7 +70,7 @@ export const WeatherBox: React.FC<{
           <Text backgroundColor="blue">{TEXT_FILLER}</Text>
         </Box>
 
-        {wind.gust / wind.speed > 1.2 ? (
+        {wind.gust !== undefined && wind.gust > MIN_GUST_MPS ? (
           <Text backgroundColor="red" color="white">
             {dir(wind.deg)}
             {kmh(wind.gust)}
@@ -68,9 +82,11 @@ export const WeatherBox: React.FC<{
           </Text>
         )}
       </Box>
-      <Text backgroundColor="blue" color="white">
-        {String(weatherFeed.lastError || "")}
-      </Text>
+      <Box height={1} flexGrow={1} flexBasis={0} overflow="hidden">
+        <Text backgroundColor="blue" color="white">
+          {String(weatherFeed.lastError || "")}
+        </Text>
+      </Box>
     </Box>
   );
 };

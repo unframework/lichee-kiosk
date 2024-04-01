@@ -72,7 +72,7 @@ const weatherSchema = z.object({
   wind: z.object({
     speed: z.number(),
     deg: z.number(),
-    gust: z.number(),
+    gust: z.number().optional(),
   }),
   clouds: z.object({
     all: z.number(),
