@@ -35,7 +35,10 @@ function useFullscreen() {
     };
   }, [stdout]);
 
-  return size;
+  return {
+    columns: 68,
+    rows: 19,
+  };
 }
 
 const App: React.FC = () => {
